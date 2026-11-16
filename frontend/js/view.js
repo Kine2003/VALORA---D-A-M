@@ -2,25 +2,19 @@
 import { calcularLinea, calcularTotales, formatoMoneda, nombreComida, obtenerOferta, TIPOS_COMIDA } from "./cart.js";
 
 export function mostrarServicios(servicios) {
-  const tarjetas = Object.entries(servicios).map(([id, servicio], indice) => {
+  const tarjetas = Object.entries(servicios).map(([id, servicio]) => {
     const tarjeta = document.createElement("article");
     tarjeta.className = "tarjeta-servicio";
     tarjeta.dataset.category = servicio.categoria;
 
     const visual = document.createElement("div");
-    visual.className = `servicio-visual ${servicio.estilo}`;
-    const numero = document.createElement("span");
-    numero.className = "numero-servicio";
-    numero.textContent = servicio.etiqueta || `0${indice + 1}`;
+    visual.className = "servicio-visual";
     const icono = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     icono.setAttribute("aria-hidden", "true");
     const uso = document.createElementNS("http://www.w3.org/2000/svg", "use");
     uso.setAttribute("href", `#${servicio.icono}`);
     icono.append(uso);
-    const etiqueta = document.createElement("span");
-    etiqueta.className = "servicio-chip";
-    etiqueta.textContent = servicio.frase;
-    visual.append(numero, icono, etiqueta);
+    visual.append(icono);
 
     const contenido = document.createElement("div");
     contenido.className = "servicio-contenido";
@@ -52,14 +46,12 @@ export function mostrarProductos(productos, tipoComida = "TODOS") {
   const fragmento = document.createDocumentFragment();
   const plantilla = document.getElementById("plantilla-paquete");
   const visibles = productos.filter(producto => tipoComida === "TODOS" || producto.ofertas.some(oferta => oferta.tipoComida === tipoComida));
-  visibles.forEach((producto, indice) => {
+  visibles.forEach(producto => {
     const ofertas = producto.ofertas.filter(oferta => tipoComida === "TODOS" || oferta.tipoComida === tipoComida);
     const tarjeta = plantilla.content.firstElementChild.cloneNode(true);
     tarjeta.querySelector("img").src = producto.imagen;
     tarjeta.querySelector("img").alt = producto.imagenAlt;
-    tarjeta.querySelector(".paquete-ordinal").textContent = `0${indice + 1}`;
     tarjeta.querySelector(".paquete-nombre").textContent = producto.nombre;
-    tarjeta.querySelector(".paquete-etiqueta").textContent = producto.etiqueta;
     tarjeta.querySelector(".paquete-descripcion").textContent = producto.descripcion;
     tarjeta.querySelector(".paquete-comidas").textContent = ofertas.map(oferta => nombreComida(oferta.tipoComida)).join(" · ");
     tarjeta.querySelector(".paquete-variedad").textContent = ofertas.length === 1
@@ -76,7 +68,7 @@ export function mostrarProductos(productos, tipoComida = "TODOS") {
     }
     const boton = tarjeta.querySelector("button");
     boton.dataset.producto = producto.id;
-    boton.setAttribute("aria-label", `Personalizar y agregar ${producto.nombre}`);
+    boton.setAttribute("aria-label", `Personalizar paquete: ${producto.nombre}`);
     boton.setAttribute("aria-haspopup", "dialog");
     boton.setAttribute("aria-controls", "configurar-paquete");
     fragmento.append(tarjeta);
@@ -206,7 +198,18 @@ export function mostrarCarrito(carrito, productos, entrega) {
     fragmento.append(tarjeta);
   });
   document.getElementById("lineas-carrito").replaceChildren(fragmento);
-  document.getElementById("cuenta-carrito").textContent = String(carrito.lineas.length);
+  const contador = document.getElementById("cuenta-carrito");
+  const cantidad = String(carrito.lineas.length);
+  if (contador.textContent !== cantidad) {
+    contador.textContent = cantidad;
+    if (window.matchMedia?.("(prefers-reduced-motion: no-preference)").matches) {
+      contador.getAnimations?.().forEach(animacion => animacion.cancel());
+      contador.animate?.(
+        [{ scale: 1 }, { scale: 1.24, offset: 0.45 }, { scale: 1 }],
+        { duration: 240, easing: "ease-out" },
+      );
+    }
+  }
   document.querySelector(".acceso-carrito").setAttribute("aria-label", `Ver carrito, ${carrito.lineas.length} ${carrito.lineas.length === 1 ? "paquete" : "paquetes"}`);
   mostrarActualizacion(carrito);
   mostrarTotales(carrito.lineas, productos, entrega);

@@ -1,4 +1,6 @@
 /* Catálogo público del proyecto: Fetch con validación y copia opcional en IndexedDB. */
+import { servidorLocal, urlApi } from "./api.js";
+
 const URL_CATALOGO = new URL("../data/servicios.json", import.meta.url);
 const NOMBRE_DB = "valora-catalogo";
 const ALMACEN = "catalogos";
@@ -98,7 +100,7 @@ export async function cargarCatalogo({ signal } = {}) {
   signal?.addEventListener("abort", cancelar, { once: true });
   const limite = setTimeout(cancelar, 8000);
   try {
-    const respuesta = await fetch(URL_CATALOGO, {
+    const respuesta = await fetch(servidorLocal() ? urlApi("servicios") : URL_CATALOGO, {
       signal: controlador.signal,
       credentials: "omit",
       headers: { Accept: "application/json" },

@@ -37,7 +37,7 @@ jobs:
         run: npm install --prefix "$RUNNER_TEMP/valora-ci" --no-save --no-audit --no-fund html-validate@11.16.2 playwright@1.64.0 @axe-core/playwright@4.13.0
 
       - name: Validar estructura HTML5
-        run: "$RUNNER_TEMP/valora-ci/node_modules/.bin/html-validate index.html privacidad.html condiciones.html"
+        run: "$RUNNER_TEMP/valora-ci/node_modules/.bin/html-validate frontend/index.html frontend/privacidad.html frontend/condiciones.html"
 
       - name: Instalar Chromium para pruebas de navegador
         run: "$RUNNER_TEMP/valora-ci/node_modules/.bin/playwright install --with-deps chromium"
@@ -46,7 +46,7 @@ jobs:
         env:
           TEST_TOOLS: ${{ runner.temp }}/valora-ci/node_modules
         run: |
-          python3 -m http.server 4173 --bind 127.0.0.1 > "$RUNNER_TEMP/valora-http.log" 2>&1 &
+          python3 -m http.server 4173 --bind 127.0.0.1 --directory frontend > "$RUNNER_TEMP/valora-http.log" 2>&1 &
           SERVER_PID=$!
           trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
           for attempt in {1..30}; do
@@ -140,8 +140,8 @@ jobs:
       - name: Preparar archivos estÃ¡ticos para Pages
         run: |
           mkdir -p _site
-          cp index.html privacidad.html condiciones.html _site/
-          cp -R assets data js _site/
+          cp frontend/index.html frontend/privacidad.html frontend/condiciones.html _site/
+          cp -R frontend/assets frontend/data frontend/js _site/
 
       - name: Guardar artefacto de GitHub Pages
         uses: actions/upload-pages-artifact@v5

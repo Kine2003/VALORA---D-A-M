@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-type="service">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta
       name="description"
       content="Válora, catering empresarial en Quito. Alimentación para tu equipo, eventos, coffee breaks y soluciones a la medida de tu empresa.">
-    <meta name="theme-color" content="#1f1913">
+    <meta name="theme-color" content="#f9f5ec">
+    <meta name="page-type" content="service">
+    <meta name="site-kind" content="other">
     <meta name="color-scheme" content="light dark">
     <title>Válora · Catering empresarial con propósito</title>
     <link rel="icon" href="assets/ValoraLogo.png" type="image/png">
@@ -14,6 +16,7 @@
     <link rel="stylesheet" href="assets/vendor/tailwind.min.css">
     <link rel="stylesheet" href="assets/styles.css">
     <link rel="stylesheet" href="assets/tienda.css">
+    <link rel="stylesheet" href="assets/editorial.css">
     <link rel="stylesheet" href="assets/print.css" media="print">
     <script src="js/app.js" type="module"></script>
   </head>
@@ -22,6 +25,11 @@
     <svg class="sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <symbol id="i-arrow" viewBox="0 0 24 24">
         <path d="M4 12h15m-6-6 6 6-6 6" />
+      </symbol>
+      <symbol id="i-cart" viewBox="0 0 24 24">
+        <path d="M2 4h3l2.4 11h11.8l2-7H6" />
+        <circle cx="9" cy="20" r="1" />
+        <circle cx="18" cy="20" r="1" />
       </symbol>
       <symbol id="i-check" viewBox="0 0 24 24">
         <path d="m5 12 4 4L19 6" />
@@ -87,21 +95,8 @@
             >Válora<small>CATERING EMPRESARIAL</small></span
         ></a
         >
-        <nav
-          id="menu-principal"
-          class="navegacion-principal"
-          aria-label="Navegación principal"
-        >
-          <ul>
-            <li><a href="#inicio" aria-current="location">Inicio</a></li>
-            <li><a href="#paquetes">Paquetes</a></li>
-            <li><a href="#nosotros">Nosotros</a></li>
-            <li><a href="#servicios">Servicios</a></li>
-            <li><a href="#beneficios">Beneficios</a></li>
-            <li><a href="#contacto">Contacto</a></li>
-          </ul>
-        </nav>
         <div class="nav-acciones">
+          <a class="boton boton-morado cabecera-cotizar" href="#contacto">Solicitar cotización <svg class="icono" aria-hidden="true"><use href="#i-arrow" /></svg></a>
           <button
             id="tema-toggle"
             class="boton-icono solo-js"
@@ -113,9 +108,8 @@
               <use href="#i-moon" />
             </svg></button
             ><button class="boton boton-azul acceso-carrito" id="abrir-carrito" type="button" aria-label="Ver carrito, 0 paquetes" aria-haspopup="dialog" aria-controls="carrito" aria-expanded="false"
-            ><span class="carrito-texto">Carrito</span><span aria-hidden="true">(<span id="cuenta-carrito">0</span>)</span>
-            <svg class="icono" aria-hidden="true">
-              <use href="#i-arrow" /></svg></button
+            ><svg class="icono" aria-hidden="true"><use href="#i-cart" /></svg>
+            <span class="carrito-texto">Carrito</span><span id="cuenta-carrito" aria-hidden="true">0</span></button
           ><button
             class="boton-menu solo-js"
             id="menu-toggle"
@@ -127,123 +121,99 @@
             <span></span><span></span><span></span>
           </button>
         </div>
+        <nav
+          id="menu-principal"
+          class="navegacion-principal"
+          aria-label="Navegación principal"
+        >
+          <ul>
+            <li><a href="#inicio" aria-current="location">Inicio</a></li>
+            <li><a href="#paquetes">Menús y paquetes</a></li>
+            <li><a href="#servicios">Servicios para empresas</a></li>
+            <li><a href="#nosotros">Sobre Válora</a></li>
+            <li class="nav-cotizar-movil"><a class="nav-cotizar" href="#contacto">Solicitar cotización <svg class="icono" aria-hidden="true"><use href="#i-arrow" /></svg></a></li>
+          </ul>
+        </nav>
       </div>
     </header>
 
     <main id="main-content" tabindex="-1">
-      <section id="inicio" class="hero" aria-labelledby="titulo-hero">
+      <section id="inicio" class="hero" aria-labelledby="titulo-hero" data-enter>
         <div class="contenedor hero-grid">
           <div class="hero-texto">
-            <p class="etiqueta">
-              <span class="punto"></span> CATERING EMPRESARIAL · QUITO
-            </p>
-            <h1 id="titulo-hero">
-              Catering empresarial<br>para el bienestar<br><em>de tu equipo.</em>
-            </h1>
+            <h1 id="titulo-hero">Catering para empresas <em>en Quito.</em></h1>
             <p class="hero-descripcion">
-              Alimentación corporativa para cuidar a tu equipo todos los días:
-              menús equilibrados, eventos y soluciones a la medida de tu
-              operación.
+              Del desayuno de oficina al evento de empresa. Elige un menú para
+              tu equipo o cuéntanos qué necesitas para tu próxima reunión.
             </p>
-            <ul class="hero-servicios" aria-label="Soluciones de catering empresarial">
-              <li>
-                <svg class="icono" aria-hidden="true"><use href="#i-plate" /></svg>
-                <span>Almuerzos corporativos</span>
-              </li>
-              <li>
-                <svg class="icono" aria-hidden="true"><use href="#i-cup" /></svg>
-                <span>Coffee breaks y eventos</span>
-              </li>
-              <li>
-                <svg class="icono" aria-hidden="true"><use href="#i-leaf" /></svg>
-                <span>Bienestar y nutrición</span>
-              </li>
-            </ul>
             <div class="hero-acciones">
-              <a class="boton boton-morado" href="#paquetes"
-                >Arma tu pedido
-                <svg class="icono" aria-hidden="true">
-                  <use href="#i-arrow" /></svg></a
-              ><a class="enlace-flecha" href="#servicios"
-                >Explorar servicios <span aria-hidden="true">↗</span></a
-              >
-            </div>
-            <div class="hero-nota">
-              <span class="sello"
-                ><svg class="icono" aria-hidden="true">
-                  <use href="#i-leaf" /></svg
-              ></span>
-              <p>
-                <strong
-                  >Ingredientes con calidad. Servicio con propósito.</strong
-                ><span>Una propuesta a la medida de cada organización.</span>
-              </p>
+              <a class="boton boton-morado" href="#paquetes">
+                Ver paquetes <svg class="icono" aria-hidden="true"><use href="#i-arrow" /></svg>
+              </a>
+              <a class="enlace-flecha" href="#contacto">Solicitar cotización</a>
             </div>
           </div>
           <figure class="hero-visual">
-            <picture
-              ><source
-                media="(max-width: 600px)"
-                srcset="
-                  assets/catering-hero-small.jpg  768w,
-                  assets/catering-hero.jpg       1440w
-                "
-                sizes="100vw">
+            <picture>
               <img
                 src="assets/catering-hero.jpg"
-                srcset="
-                  assets/catering-hero-small.jpg  768w,
-                  assets/catering-hero.jpg       1440w
-                "
-                sizes="(min-width: 992px) 48vw, 100vw"
-                alt="Mesa de catering para un evento con platos variados, ensaladas y bocados para compartir"
+                srcset="assets/catering-hero-small.jpg 768w, assets/catering-hero.jpg 1440w"
+                sizes="(min-width: 900px) 52vw, 100vw"
+                alt="Mesa de catering con ensaladas, panes y bocados para compartir"
                 width="1440"
                 height="960"
-                fetchpriority="high"></picture>
-            <div class="hero-imagen-overlay" aria-hidden="true"></div>
-            <span class="ubicacion"
-              ><svg class="icono" aria-hidden="true"><use href="#i-pin" /></svg>
-              Quito, Ecuador</span
-            >
-            <div class="hero-tarjeta">
-              <span class="sello"
-                ><svg class="icono" aria-hidden="true">
-                  <use href="#i-check" /></svg
-              ></span>
-              <div>
-                <strong>Tu equipo, bien alimentado.</strong
-                ><span>Nosotros nos encargamos del resto.</span>
-              </div>
-            </div>
-            <figcaption>
-              <span>HECHO CON PROPÓSITO</span>
-              <p>El buen sabor<br>también se comparte.</p>
-              <span class="foto-nota">Imagen gastronómica ilustrativa</span>
-            </figcaption>
+                fetchpriority="high">
+            </picture>
           </figure>
         </div>
       </section>
-      <div class="franja-confianza">
-        <div class="contenedor confianza-grid">
-          <p>
-            <svg class="icono" aria-hidden="true"><use href="#i-plate" /></svg>
-            Menús para tu empresa
-          </p>
-          <p>
-            <svg class="icono" aria-hidden="true"><use href="#i-shield" /></svg>
-            Operación confiable
-          </p>
-          <p>
-            <svg class="icono" aria-hidden="true"><use href="#i-users" /></svg>
-            Eventos corporativos
-          </p>
-          <p>
-            <svg class="icono" aria-hidden="true"><use href="#i-leaf" /></svg>
-            Bienestar para tu equipo
-          </p>
-        </div>
-      </div>
 
+      <section class="seccion ocasiones" aria-labelledby="titulo-ocasiones">
+        <div class="contenedor">
+          <h2 id="titulo-ocasiones">De la oficina <em>al evento</em></h2>
+          <div class="ocasiones-grid">
+            <a class="ocasion" href="#paquetes">
+              <div class="ocasion-foto">
+                <img src="assets/paquetes/buffet-empresarial.jpg" width="960" height="640" alt="" loading="lazy">
+              </div>
+              <div class="ocasion-texto">
+                <h3>Alimentación para equipos</h3>
+                <p>Desayunos, almuerzos y meriendas con menús que puedes personalizar.</p>
+                <span>Explorar menús <svg class="icono" aria-hidden="true"><use href="#i-arrow" /></svg></span>
+              </div>
+            </a>
+            <a class="ocasion" href="#contacto">
+              <div class="ocasion-foto">
+                <img src="assets/paquetes/coffee-break.jpg" width="960" height="640" alt="" loading="lazy">
+              </div>
+              <div class="ocasion-texto">
+                <h3>Eventos y reuniones</h3>
+                <p>Coffee breaks y propuestas de catering según la fecha y el número de invitados.</p>
+                <span>Cotizar un evento <svg class="icono" aria-hidden="true"><use href="#i-arrow" /></svg></span>
+              </div>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section id="paquetes" class="seccion paquetes" aria-labelledby="titulo-paquetes">
+        <div class="contenedor">
+          <div class="encabezado-seccion">
+            <div><h2 id="titulo-paquetes">Paquetes de catering</h2></div>
+            <p>Elige desayuno, almuerzo o merienda. Después personaliza tu paquete, las personas y los complementos.</p>
+          </div>
+          <div id="filtros-comidas" class="filtros solo-js" role="group" aria-label="Filtrar paquetes por tipo de comida">
+            <button type="button" class="filtro activo" data-comida="TODOS" aria-pressed="true">Ver todos</button>
+            <button type="button" class="filtro" data-comida="DESAYUNO" aria-pressed="false">Desayunos</button>
+            <button type="button" class="filtro" data-comida="ALMUERZO" aria-pressed="false">Almuerzos</button>
+            <button type="button" class="filtro" data-comida="MERIENDA" aria-pressed="false">Meriendas</button>
+          </div>
+          <p id="estado-catalogo" role="status" aria-atomic="true">Activa JavaScript para personalizar paquetes, o <a href="#contacto">consulta directamente con nosotros</a>.</p>
+          <button type="button" id="reintentar-productos" class="boton boton-borde" hidden>Volver a cargar paquetes</button>
+          <div id="catalogo-productos" class="catalogo-grid" aria-busy="false"></div>
+          <p class="ayuda nota-catalogo">Menús y precios de demostración. La oferta final y las necesidades alimentarias se confirman con Válora.</p>
+        </div>
+      </section>
       <section
         id="servicios"
         class="seccion servicios"
@@ -252,10 +222,7 @@
         <div class="contenedor">
           <div class="encabezado-seccion">
             <div>
-              <p class="etiqueta">SOLUCIONES PARA TU EMPRESA</p>
-              <h2 id="titulo-servicios">
-                ¿Qué necesita tu empresa?<br><em>Nos adaptamos a tu equipo.</em>
-              </h2>
+              <h2 id="titulo-servicios">Servicios para empresas</h2>
             </div>
             <p>
               Cuéntanos qué quieres resolver y encuentra una solución para la
@@ -315,34 +282,16 @@
           <div class="grid-servicios" aria-busy="false"></div>
         </div>
       </section>
-      <section id="paquetes" class="seccion paquetes" aria-labelledby="titulo-paquetes">
-        <div class="contenedor">
-          <div class="encabezado-seccion">
-            <div><p class="etiqueta">A TU GUSTO, A TU MEDIDA</p><h2 id="titulo-paquetes">Un buen encuentro<br><em>empieza por el menú.</em></h2></div>
-            <p>Elige desayuno, almuerzo o merienda. Después personaliza tu paquete, las personas y los complementos.</p>
-          </div>
-          <div id="filtros-comidas" class="filtros solo-js" role="group" aria-label="Filtrar paquetes por tipo de comida">
-            <button type="button" class="filtro activo" data-comida="TODOS" aria-pressed="true">Ver todos</button>
-            <button type="button" class="filtro" data-comida="DESAYUNO" aria-pressed="false">Desayunos</button>
-            <button type="button" class="filtro" data-comida="ALMUERZO" aria-pressed="false">Almuerzos</button>
-            <button type="button" class="filtro" data-comida="MERIENDA" aria-pressed="false">Meriendas</button>
-          </div>
-          <p id="estado-catalogo" role="status" aria-atomic="true">Activa JavaScript para personalizar paquetes, o <a href="#contacto">consulta directamente con nosotros</a>.</p>
-          <button type="button" id="reintentar-productos" class="boton boton-borde" hidden>Volver a cargar paquetes</button>
-          <div id="catalogo-productos" class="catalogo-grid" aria-busy="false"></div>
-          <p class="ayuda">Menús y precios de demostración. Imágenes ilustrativas generadas con IA. La oferta final y las necesidades alimentarias se confirman con Válora.</p>
-        </div>
-      </section>
 
       <dialog id="carrito" class="panel-carrito seccion-carrito" aria-labelledby="titulo-carrito" aria-describedby="ayuda-carrito">
         <div class="contenedor">
           <div class="carrito-panel-cabecera">
-            <div><p class="etiqueta">TU PRÓXIMO ENCUENTRO</p><h2 id="titulo-carrito" tabindex="-1">Tu pedido,<br><em>como lo imaginaste.</em></h2><p id="ayuda-carrito" class="ayuda">Revisa tus paquetes y completa los datos del servicio. Cada pedido corresponde a una comida y un horario.</p></div>
+            <div><h2 id="titulo-carrito" tabindex="-1">Tu pedido</h2><p id="ayuda-carrito" class="ayuda">Revisa tus paquetes y completa los datos del servicio. Cada pedido corresponde a una comida y un horario.</p></div>
             <button type="button" class="boton-icono" id="cerrar-carrito" aria-label="Cerrar carrito"><svg class="icono" aria-hidden="true"><use href="#i-close" /></svg></button>
           </div>
           <p id="estado-carrito" class="estado-tienda" role="status" aria-atomic="true"></p>
           <p id="aviso-almacenamiento" class="aviso-tienda" role="status" aria-atomic="true" hidden></p>
-          <div id="carrito-vacio" class="carrito-vacio"><p class="etiqueta">AQUÍ EMPIEZA TU PEDIDO</p><h3>Todavía no hay paquetes en tu carrito.</h3><p>Encuentra una opción para tu equipo y personalízala a tu gusto.</p><a class="boton boton-morado" href="#paquetes">Explorar paquetes <span aria-hidden="true">↗</span></a></div>
+          <div id="carrito-vacio" class="carrito-vacio"><h3>Todavía no hay paquetes en tu carrito.</h3><p>Encuentra una opción para tu equipo y personalízala a tu gusto.</p><a class="boton boton-morado" href="#paquetes">Explorar paquetes <span aria-hidden="true">↗</span></a></div>
           <div id="carrito-contenido" hidden>
             <div class="carrito-distribucion">
               <div>
@@ -353,13 +302,13 @@
                 <p class="ayuda" id="actualizacion-carrito"></p>
               </div>
               <aside class="resumen-carrito" aria-labelledby="titulo-total">
-                <p class="etiqueta">TODO CLARO</p><h3 id="titulo-total">Resumen del pedido</h3><p id="pedido-tipo-comida" class="ayuda"></p>
+                <h3 id="titulo-total">Resumen del pedido</h3><p id="pedido-tipo-comida" class="ayuda"></p>
                 <dl class="totales-carrito"><div><dt>Subtotal de paquetes</dt><dd id="subtotal-carrito">$0,00</dd></div><div><dt>Entrega</dt><dd id="entrega-carrito">$0,00</dd></div><div class="total-destacado"><dt>Total</dt><dd id="total-carrito">$0,00</dd></div></dl>
                 <a href="#datos-pedido" class="boton boton-morado">Completar datos del servicio <span aria-hidden="true">↓</span></a>
               </aside>
             </div>
             <form id="datos-pedido" class="datos-pedido" aria-labelledby="titulo-datos-pedido" aria-describedby="ayuda-pedido">
-              <div><p class="etiqueta">LOS ÚLTIMOS DETALLES</p><h3 id="titulo-datos-pedido">¿Cuándo y para quién?</h3><p id="ayuda-pedido">Completa los campos obligatorios (*) con tus datos de contacto y el horario de este servicio. Para otra comida u horario, prepara un pedido separado.</p></div>
+              <div><h3 id="titulo-datos-pedido">¿Cuándo y para quién?</h3><p id="ayuda-pedido">Completa los campos obligatorios (*) con tus datos de contacto y el horario de este servicio. Para otra comida u horario, prepara un pedido separado.</p></div>
               <fieldset><legend class="sr-only">Contacto y datos del evento</legend><div class="campos-pedido">
                 <div class="campo"><label for="pedido-nombre">Nombre y apellido *</label><input type="text" id="pedido-nombre" name="nombre" autocomplete="name" required minlength="3" maxlength="80" aria-describedby="error-pedido-nombre"><p id="error-pedido-nombre" class="mensaje-error" hidden></p></div>
                 <div class="campo"><label for="pedido-correo">Correo electrónico *</label><input id="pedido-correo" name="correo" type="email" autocomplete="email" required maxlength="120" aria-describedby="error-pedido-correo"><p id="error-pedido-correo" class="mensaje-error" hidden></p></div>
@@ -373,12 +322,12 @@
               <div class="borrador-panel"><label class="opcion-borrador"><input type="checkbox" id="recordar-pedido" aria-describedby="ayuda-recordar-pedido"><span>Guardar los datos de este servicio en esta pestaña</span></label><p id="ayuda-recordar-pedido" class="ayuda">Se guarda automáticamente y se recupera al recargar. Desmarca para dejar de guardarlo o borra el borrador cuando quieras.</p><button type="button" class="enlace-flecha" id="borrar-pedido" disabled>Borrar datos guardados del servicio</button><p id="estado-borrador-pedido" class="ayuda" role="status" aria-atomic="true"></p></div>
               <p id="errores-pedido" class="resumen-errores" role="alert" hidden></p>
               <p id="estado-validacion-pedido" class="sr-only" role="status" aria-atomic="true"></p>
-              <div class="acciones-tienda"><button type="submit" class="boton boton-morado" id="finalizar-compra">Preparar pedido <span aria-hidden="true">→</span></button><p class="ayuda">Este recorrido prepara un resumen de demostración. Aún no envía pedidos ni procesa pagos. <a href="privacidad.html">Privacidad</a>.</p></div>
+              <div class="acciones-tienda"><button type="submit" class="boton boton-morado" id="finalizar-compra">Preparar pedido <span aria-hidden="true">→</span></button><p class="ayuda" id="ayuda-finalizar-pedido">Este recorrido prepara un resumen de demostración. Aún no envía pedidos ni procesa pagos. <a href="privacidad.html">Privacidad</a>.</p></div>
             </form>
           </div>
           <section id="comprobante-pedido" class="comprobante-pedido" aria-labelledby="titulo-comprobante" hidden>
             <h3 id="titulo-comprobante" tabindex="-1">Tu pedido está preparado</h3>
-            <p class="ayuda">Resumen de demostración preparado en este navegador. La disponibilidad y la confirmación se coordinan con Válora.</p>
+            <p class="ayuda" id="ayuda-pedido-preparado">Resumen de demostración preparado en este navegador. La disponibilidad y la confirmación se coordinan con Válora.</p>
             <pre id="resumen-pedido-preparado" class="resumen-pedido-preparado" tabindex="0" aria-label="Resumen del pedido preparado"></pre>
             <div class="acciones-tienda"><button id="seguir-comprando" class="boton boton-morado" type="button">Preparar otro pedido <span aria-hidden="true">→</span></button></div>
           </section>
@@ -399,14 +348,9 @@
               width="960"
               height="640"
               loading="lazy">
-            <p>Más que servir alimentos,<br><em>cuidamos personas.</em></p>
-            <span class="nosotros-firma">ESTA ES NUESTRA ESENCIA</span>
           </div>
           <div class="nosotros-texto">
-            <p class="etiqueta">CONOCE VÁLORA</p>
-            <h2 id="titulo-nosotros">
-              El verdadero valor<br><em>de alimentarse.</em>
-            </h2>
+            <h2 id="titulo-nosotros">La cocina detrás <em>de Válora</em></h2>
             <p>
               Creemos que una buena alimentación puede transformar el día de una
               persona. Por eso acompañamos a las organizaciones con un servicio
@@ -446,7 +390,6 @@
         <div class="contenedor">
           <div class="encabezado-seccion">
             <div>
-              <p class="etiqueta">LA DIFERENCIA ESTÁ EN EL CUIDADO</p>
               <h2 id="titulo-beneficios">
                 Tú enfócate en tu equipo.<br><em
                   >Nosotros, en su alimentación.</em
@@ -543,7 +486,6 @@
       <section class="seccion proceso" aria-labelledby="titulo-proceso">
         <div class="contenedor">
           <div class="encabezado-centrado">
-            <p class="etiqueta">ASÍ DE SENCILLO</p>
             <h2 id="titulo-proceso">
               De una conversación<br><em>a una gran experiencia.</em>
             </h2>
@@ -570,7 +512,6 @@
       <aside class="seccion preguntas" aria-labelledby="titulo-preguntas">
         <div class="contenedor preguntas-grid">
           <div>
-            <p class="etiqueta">ANTES DE EMPEZAR</p>
             <h2 id="titulo-preguntas">
               Buenas preguntas.<br><em>Respuestas claras.</em>
             </h2>
@@ -638,7 +579,6 @@
       >
         <div class="contenedor contacto-grid">
           <div class="info-contacto">
-            <p class="etiqueta">EL PRIMER PASO EMPIEZA AQUÍ</p>
             <h2 id="titulo-contacto">
               Algo bueno<br><em>se está cocinando.</em>
             </h2>
@@ -941,6 +881,7 @@
           © <time id="copyright-year" datetime="2026">2026</time> Válora
           Catering Empresarial.
         </p>
+        <p class="pie-credito">Imágenes gastronómicas ilustrativas generadas con IA.</p>
         <div class="tw:flex tw:flex-wrap tw:gap-3">
           <a href="privacidad.html">Privacidad</a
           ><a href="condiciones.html">Condiciones del servicio</a
@@ -950,8 +891,8 @@
     </footer>
     <template id="plantilla-paquete">
       <article class="tarjeta-paquete">
-        <div class="paquete-imagen"><img src="assets/paquetes/buffet-empresarial.jpg" alt="" width="960" height="640" loading="lazy"><span class="paquete-ordinal" aria-hidden="true"></span></div>
-        <div class="paquete-cuerpo"><p class="etiqueta paquete-etiqueta"></p><h3 class="paquete-nombre">Nombre del paquete</h3><p class="paquete-descripcion"></p><p class="paquete-comidas"></p><p class="paquete-variedad ayuda"></p><ul class="paquete-incluye"></ul><p class="paquete-precio"><span class="ayuda">Desde</span> <strong></strong> <span class="ayuda">/ persona</span></p><p class="ayuda paquete-minimo"></p><button type="button" class="boton boton-morado configurar-paquete">Personalizar y agregar <span aria-hidden="true">→</span></button></div>
+        <div class="paquete-imagen"><img src="assets/paquetes/buffet-empresarial.jpg" alt="" width="960" height="640" loading="lazy"></div>
+        <div class="paquete-cuerpo"><h3 class="paquete-nombre">Nombre del paquete</h3><p class="paquete-descripcion"></p><p class="paquete-comidas"></p><p class="paquete-variedad ayuda"></p><ul class="paquete-incluye"></ul><p class="paquete-precio"><span class="ayuda">Desde</span> <strong></strong> <span class="ayuda">/ persona</span></p><p class="ayuda paquete-minimo"></p><button type="button" class="boton boton-morado configurar-paquete">Personalizar paquete <span aria-hidden="true">→</span></button></div>
       </article>
     </template>
     <template id="plantilla-linea">
@@ -963,7 +904,7 @@
       </article>
     </template>
     <dialog id="configurar-paquete" class="dialogo-paquete" aria-labelledby="titulo-configuracion" aria-describedby="ayuda-configuracion">
-      <div class="dialogo-cabecera"><p class="etiqueta">DALE TU TOQUE</p><button type="button" class="boton-icono" id="cerrar-configuracion" aria-label="Cerrar configuración del paquete"><svg class="icono" aria-hidden="true"><use href="#i-close" /></svg></button></div>
+      <div class="dialogo-cabecera"><button type="button" class="boton-icono" id="cerrar-configuracion" aria-label="Cerrar configuración del paquete"><svg class="icono" aria-hidden="true"><use href="#i-close" /></svg></button></div>
       <h2 id="titulo-configuracion">Configurar paquete</h2><p id="ayuda-configuracion">Elige el tipo de comida y después el menú y los complementos para todas las personas de este paquete. Puedes agregar otro menú de la misma comida.</p>
       <form id="formulario-paquete" aria-labelledby="titulo-configuracion">
         <div class="campos-configuracion">
@@ -980,7 +921,6 @@
     </dialog>
     <dialog id="dialogo-servicio" aria-labelledby="dialogo-titulo">
       <div class="dialogo-cabecera">
-        <p class="etiqueta">UNA SOLUCIÓN PARA TU EMPRESA</p>
         <button
           id="cerrar-dialogo"
           type="button"

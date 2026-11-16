@@ -1,73 +1,63 @@
-# Válora · Catálogo y carrito por tipo de comida
+# Válora Catering
 
-Proyecto académico de Joel Robalino, paralelo 2. Adaptación del frontend original de MelanieVinueza/RETO1--VALORA-CATERING, commit `928c3eb456703dbb0941917e7d385220c3726738`.
+Aplicación cliente-servidor con Node.js 24 y MySQL 8.0. El catálogo se lee de MySQL y los pedidos y cotizaciones se registran con un número de solicitud.
 
-Esta entrega conserva la presentación, tipografías, colores, imágenes, navegación, modo claro/oscuro, cuatro servicios y seis paquetes de la página original. Solo adapta el catálogo, los formularios y el carrito al modelo de datos propuesto.
+## Inicio local
 
-## Abrir la página
+En este equipo ya están configuradas la base `valora` y la cuenta `valora_app`. Si el servidor está detenido, ejecuta `npm.cmd start` desde la carpeta del proyecto y abre [Válora local](http://127.0.0.1:3000/). La [ruta de estado](http://127.0.0.1:3000/api/v1/salud) verifica la conexión.
 
-1. Descomprimir la carpeta `valora-web`.
-2. Abrir esa carpeta en VS Code.
-3. Abrir `index.html` con la extensión **Live Server**.
+## Tres capas y siete módulos del backend
 
-También se puede iniciar un servidor estático desde esa carpeta con `python -m http.server 8000` y abrir `http://localhost:8000/`. Según la instalación, el comando puede ser `python3` o `py`.
+- **Presentación.** `frontend/` contiene las vistas HTML, los estilos, las imágenes y el código del navegador. En el modo conectado, el navegador intercambia JSON con la API.
+- **Aplicación.** `backend/` recibe las peticiones HTTP, valida los datos y ejecuta los casos de uso.
+- **Datos.** MySQL almacena el catálogo y las solicitudes. Los repositorios ejecutan SQL mediante la conexión de `datos/` y `backend/sql/` contiene el esquema.
 
-No abrir el HTML con doble clic: los catálogos JSON necesitan un servidor HTTP. La página funciona sin instalar paquetes de Node.
-
-## Qué cambió
-
-- Filtros de desayuno, almuerzo y merienda, integrados con los controles originales.
-- Cada paquete contiene ofertas por tipo de comida, con sus propios menús, extras, precio y límites de personas.
-- La personalización actualiza los menús y complementos al cambiar la comida.
-- El carrito conserva el tipo de comida y los identificadores globales del menú y de los extras.
-- Los límites de personas se leen de la oferta; no están fijados en la lógica a 10–200.
-- Cada pedido corresponde a una comida, fecha y hora. Para otro turno se prepara otro pedido.
-- Se recuperan los carritos anteriores compatibles y se avisa cuando alguna selección necesita revisión.
-- La cotización puede indicar el tipo de comida y conserva las opciones para compartir por WhatsApp o correo.
-- El cierre muestra un resumen de demostración con los menús, cantidades y total de referencia.
-
-Los desayunos añadidos y la asignación de paquetes a comidas son ejemplos para demostrar la interfaz. Todos los precios y menús deben validarse con Válora antes de usar el sitio comercialmente.
-
-## Alcance de esta entrega
-
-**Solo frontend estático.** No contiene API, servidor de negocio, base de datos, autenticación, panel administrativo ni procesamiento de pagos. Preparar el pedido no lo envía al negocio ni descuenta ingredientes. La preferencia de entrega y el carrito se conservan en este navegador; los borradores de contacto usan la sesión de la pestaña.
-
-La adaptación facilita la futura integración, pero no reemplaza la implementación y las pruebas del backend y de Oracle. El inventario, contratos y permisos se implementarán en esa etapa.
-
-## Archivos principales
-
-| Archivo | Función |
+| Ruta | Función |
 | --- | --- |
-| `index.html` | Página original con los campos y controles adaptados. |
-| `data/servicios.json` | Los cuatro servicios generales. |
-| `data/productos.json` | Catálogo de demostración, versión 2, por paquete y comida. |
-| `js/cart.js` | Validación, selección, cálculos, recuperación y resumen local. |
-| `js/view.js` | Presentación de servicios, ofertas y carrito. |
-| `js/tienda.js` | Eventos de personalización, filtros y recorrido del pedido. |
-| `js/repo.js` | Carga de JSON y almacenamiento local. |
-| `js/solicitud.js` | Validación y resumen de cotizaciones. |
-| `documentacion/INTEGRACION_BASE_DATOS.md` | Correspondencia con el modelo de Oracle y límites de la entrega. |
-| `pruebas/` | Pruebas de la lógica y de las interacciones del DOM. |
+| `servidor.js` | Arranca el servidor HTTP, entrega los archivos del frontend y deriva las peticiones de la API. |
+| `rutas/` | Selecciona el controlador según el recurso y el método HTTP. |
+| `middleware/` | Resuelve la versión de la API, lee los cuerpos JSON y serializa las respuestas. |
+| `controladores/` | Valida los datos de pedidos y cotizaciones y llama al servicio correspondiente. |
+| `servicios/` | Aplica las reglas de pedidos y cotizaciones dentro de transacciones. |
+| `modelos/` | Da forma al catálogo que consume la vista y define los errores de validación del dominio. |
+| `repositorios/` y `datos/` | Constituyen el módulo de acceso a datos. Los repositorios ejecutan las consultas y `datos/` administra las conexiones y las transacciones de MySQL. |
 
-Los informes de auditorías y semanas anteriores en `documentacion/` se conservan como antecedentes. Para esta versión prevalecen este README y la guía de integración.
+La vista de MVC está en el frontend. Por ejemplo, al registrar un pedido, el controlador valida el JSON, el servicio calcula los precios con el catálogo de MySQL y el repositorio guarda el pedido y sus detalles. La API devuelve el número de solicitud y el navegador muestra el comprobante. Las credenciales locales están en `.env`, excluido de Git.
 
-## Ejecutar las pruebas (opcional)
+## API v1
 
-Con Node.js 24 o superior:
+| Método y ruta | Respuesta JSON |
+| --- | --- |
+| `GET /api/v1/salud` | Estado de la conexión a MySQL. |
+| `GET /api/v1/productos` | Catálogo completo de paquetes, ofertas, menús y complementos. |
+| `GET /api/v1/servicios` | Catálogo de servicios. |
+| `POST /api/v1/pedidos` | Número de solicitud y resumen del pedido. El cuerpo contiene `contacto` y `lineas`. |
+| `POST /api/v1/cotizaciones` | Número de solicitud. El cuerpo contiene los datos del formulario de cotización. |
 
-```bash
-npm ci
-npm test
-```
+El catálogo se devuelve completo y el navegador filtra los paquetes por tipo de comida. El campo `version` de cada catálogo identifica el formato de sus datos. El prefijo `/api/v1` identifica la versión de las rutas HTTP. Los archivos de `frontend/data/` sirven como carga inicial y como catálogo de la demostración estática.
 
-`jsdom` es una dependencia de desarrollo utilizada por las pruebas; no se carga en la página. Las pruebas del DOM no sustituyen una revisión visual en navegadores reales. Antes de publicar, revisar también el sitio en escritorio y móvil, y probar los permisos y la integración cuando exista el backend.
+## Modelo migrado de Oracle
 
-Las licencias de fuentes y recursos se mantienen en sus carpetas originales.
+El esquema conserva 29 tablas, 210 columnas y 47 claves foráneas. Incluye las restricciones de unicidad, nulabilidad, formato y rango. La FK R10 es compuesta. El índice de servicio contratado y fecha usa la semántica de valores nulos de MySQL.
 
-## Publicación en GitHub Pages
+| Área | Tablas |
+| --- | --- |
+| Identidad | `usuario`, `rol`, `usuario_rol`, `sesion_usuario`, `cliente`. |
+| Catálogo | `servicio`, `servicio_incluye`, `paquete`, `paquete_incluye`, `tipo_comida`, `paquete_tipo_comida`, `opcion_paquete`. |
+| Contratos y solicitudes | `contrato`, `servicio_contratado`, `servicio_dia`, `solicitud`, `detalle_solicitud`, `extra_solicitud`. |
+| Compras e inventario | `proveedor`, `insumo`, `proveedor_insumo`, `compra`, `detalle_compra`, `recepcion_compra`, `lote_insumo`, `kardex`, `composicion_opcion`. |
+| Facturación | `factura`, `detalle_factura`. |
 
-El workflow `.github/workflows/ci-cd.yml` ejecuta las pruebas del proyecto y las verificaciones HTML, de accesibilidad y de diseño adaptable en cada cambio a `main` y en las solicitudes de cambio dirigidas a esa rama. Si las verificaciones pasan, prepara el sitio estático y lo publica automáticamente en GitHub Pages.
+Se usó `AUTO_INCREMENT` para identidades, `VARCHAR` con `utf8mb4` para textos de longitud limitada, `LONGTEXT` para CLOB y `TIMESTAMP(6)` para auditoría. MySQL guarda el instante de auditoría en UTC. `DECIMAL` mantiene los importes en centavos y las cantidades y costos fraccionarios.
 
-En el repositorio, configura **Settings → Pages → Build and deployment → Source: GitHub Actions**. Después de integrar cambios en `main`, el sitio estará disponible en:
+Las siete vistas SQL calculan saldos de lotes, existencias, alertas, consumo, faltantes e importes de facturación. La página registra solicitudes nuevas. Los flujos administrativos de usuarios, contratos, recepción de compras, descuento de inventario y emisión o anulación de facturas quedan pendientes junto con sus validaciones transaccionales. La carga inicial usa el catálogo JSON del repositorio.
 
-<https://melanievinueza.github.io/VALORA---D-A-M/>
+## Instalación en otro equipo
+
+1. Ejecuta `npm ci` con Node.js 24 o posterior.
+2. En MySQL 8.0, crea una base vacía llamada `valora` con `utf8mb4` y un usuario `'valora_app'@'localhost'` con la contraseña de la aplicación.
+3. Con la cuenta administradora, ejecuta `backend/sql/esquema.sql`, `backend/sql/vistas.sql` y `backend/sql/permisos.sql` sobre `valora`.
+4. Copia `.env.example` a `.env` y completa `DB_PASSWORD`. Configura `DB_ADMIN_PASSWORD` en el entorno para ejecutar `npm run db:seed`. Si la cuenta administradora es distinta de `root`, establece también `DB_ADMIN_USER`.
+5. Ejecuta `npm start`. Para correr las pruebas usa `npm test`.
+
+GitHub Pages publica `frontend/` como demostración estática. El modo conectado usa el servidor Node de este proyecto.

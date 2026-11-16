@@ -2,13 +2,13 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { JSDOM } from 'jsdom';
-import { inicializarTienda } from '../js/tienda.js';
-import { inicializarBorrador } from '../js/borrador.js';
-import { mostrarServicios } from '../js/view.js';
+import { inicializarTienda } from '../frontend/js/tienda.js';
+import { inicializarBorrador } from '../frontend/js/borrador.js';
+import { mostrarServicios } from '../frontend/js/view.js';
 
-const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
-const catalogo=JSON.parse(readFileSync(new URL('../data/productos.json',import.meta.url)));
-const servicios=JSON.parse(readFileSync(new URL('../data/servicios.json',import.meta.url))).servicios;
+const html=readFileSync(new URL('../frontend/index.html',import.meta.url),'utf8');
+const catalogo=JSON.parse(readFileSync(new URL('../frontend/data/productos.json',import.meta.url)));
+const servicios=JSON.parse(readFileSync(new URL('../frontend/data/servicios.json',import.meta.url))).servicios;
 
 async function entorno(guardado=null) {
   const dom=new JSDOM(html,{url:'http://localhost/',pretendToBeVisual:true});

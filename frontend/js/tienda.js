@@ -4,6 +4,7 @@ import { cargarProductos, leerCarrito, guardarCarrito, vaciarCarritoGuardado, le
 import { mostrarProductos, mostrarConfiguracion, mostrarOpcionesComida, mostrarCarrito, mostrarTotales, actualizarLineaCarrito, mostrarActualizacion } from "./view.js";
 import { inicializarBorrador } from "./borrador.js";
 import { fechaLocal } from "./solicitud.js";
+import { registrarSolicitud, servidorLocal } from "./api.js";
 
 export function inicializarTienda() {
   const buscar = id => document.getElementById(id);
@@ -35,6 +36,11 @@ export function inicializarTienda() {
   let focoCarritoAlCerrar = null;
   let intentoCompra = false;
   let finalizandoCompra = false;
+  if (servidorLocal()) {
+    buscar("finalizar-compra").firstChild.textContent = "Registrar pedido ";
+    buscar("ayuda-finalizar-pedido").firstChild.textContent = "Los datos del pedido se guardan en la base local. ";
+    buscar("ayuda-pedido-preparado").textContent = "El pedido quedó registrado. La disponibilidad y la confirmación se coordinan con Válora.";
+  }
 
   function enfocar(elemento) {
     if (!elemento) return;
@@ -403,7 +409,7 @@ export function inicializarTienda() {
     actualizarEntrega();
     return borradorPendiente;
   }
-  formulario.addEventListener("submit", event => {
+  formulario.addEventListener("submit", async event => {
     event.preventDefault();
     if (finalizandoCompra || !comprobante.hidden) return;
     intentoCompra = true;
@@ -425,10 +431,16 @@ export function inicializarTienda() {
     try {
       // Valida de nuevo cantidades, opciones y precios antes de modificar el carrito.
       calcularTotales(carrito.lineas, productos, entrega.value);
-      const resumen = crearResumenPedido(carrito.lineas, productos, leerCliente());
+      const contacto = leerCliente();
+      const registro = servidorLocal()
+        ? await registrarSolicitud("pedidos", { contacto, lineas: carrito.lineas })
+        : null;
+      const resumen = registro
+        ? "Pedido registrado #" + registro.id + "\n\n" + registro.resumen
+        : crearResumenPedido(carrito.lineas, productos, contacto);
       const carritoVacio = { version: 2, actualizadoEn: new Date().toISOString(), lineas: [] };
       const resultado = vaciarCarritoGuardado(carritoVacio);
-      if (!resultado.completado) {
+      if (!resultado.completado && !registro) {
         avisarAlmacenamiento(resultado.aviso);
         enfocar(aviso);
         return;
@@ -444,8 +456,8 @@ export function inicializarTienda() {
       buscar("resumen-pedido-preparado").textContent = resumen;
       anunciar("");
       enfocar(buscar("titulo-comprobante"));
-    } catch {
-      anunciar("No pudimos preparar tu pedido. Revisa tus paquetes y vuelve a intentar.");
+    } catch (error) {
+      anunciar(servidorLocal() && error.message ? error.message : "No pudimos preparar tu pedido. Revisa tus paquetes y vuelve a intentar.");
       enfocar(buscar("titulo-carrito"));
     } finally {
       finalizandoCompra = false;

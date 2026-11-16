@@ -2,10 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { validarProductos, crearLinea, calcularLinea, calcularTotales, normalizarCarrito, validarCliente, validarCombinacion, crearResumenPedido } from '../js/cart.js';
-import { crearResumenSolicitud } from '../js/solicitud.js';
+import { validarProductos, crearLinea, calcularLinea, calcularTotales, normalizarCarrito, validarCliente, validarCombinacion, crearResumenPedido } from '../frontend/js/cart.js';
+import { crearResumenSolicitud } from '../frontend/js/solicitud.js';
 
-const catalogo = JSON.parse(readFileSync(new URL('../data/productos.json',import.meta.url)));
+const catalogo = JSON.parse(readFileSync(new URL('../frontend/data/productos.json',import.meta.url)));
 const productos = validarProductos(catalogo);
 const buffet = productos.find(p => p.id === 'buffet-empresarial');
 function linea(comida='ALMUERZO', extras=[], id='prueba') {
@@ -15,10 +15,10 @@ function linea(comida='ALMUERZO', extras=[], id='prueba') {
 
 test('se conservan los seis paquetes y cada oferta identifica su comida e imagen',() => {
   assert.equal(productos.length,6);
-  const servicios=JSON.parse(readFileSync(new URL('../data/servicios.json',import.meta.url))).servicios;
+  const servicios=JSON.parse(readFileSync(new URL('../frontend/data/servicios.json',import.meta.url))).servicios;
   for (const p of productos) {
     assert.ok(Object.hasOwn(servicios,p.servicioId));
-    assert.ok(existsSync(fileURLToPath(new URL('../'+p.imagen,import.meta.url))));
+    assert.ok(existsSync(fileURLToPath(new URL('../frontend/'+p.imagen,import.meta.url))));
     for(const o of p.ofertas) {
       const l=crearLinea(p,{tipoComida:o.tipoComida,personas:o.minPersonas,menuId:o.menus[0].id,extrasIds:o.extras.map(e=>e.id)});
       assert.ok(calcularLinea(l,productos).subtotalCentavos>0);

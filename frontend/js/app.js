@@ -9,6 +9,7 @@ import {
 import { cargarCatalogo } from "./catalogo.js";
 import { inicializarBorrador } from "./borrador.js";
 import { mostrarServicios } from "./view.js";
+import { registrarSolicitud, servidorLocal } from "./api.js";
 
 const CLAVE_POSICION_SCROLL = "valora-scroll-position-v1";
 
@@ -209,29 +210,36 @@ function inicializarNavegacion() {
         }
       });
 
-    // Se determina la sección más cercana a la cabecera, sin modificar el historial al desplazar.
     const sectionLinks = [...navigation.querySelectorAll('a[href^="#"]')];
-    const sections = [...document.querySelectorAll("main > section[id]")];
-    if ("IntersectionObserver" in window) {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          const visible = entries
-            .filter((entry) => entry.isIntersecting)
-            .sort(
-              (a, b) => a.boundingClientRect.top - b.boundingClientRect.top,
-            );
-          if (!visible.length) return;
-          const currentId = visible[0].target.id;
-          sectionLinks.forEach((link) => {
-            if (link.hash === `#${currentId}`)
-              link.setAttribute("aria-current", "location");
-            else link.removeAttribute("aria-current");
-          });
-        },
-        { rootMargin: "-15% 0px -55% 0px", threshold: 0 },
-      );
-      sections.forEach((section) => observer.observe(section));
+    const sections = sectionLinks.map(link => document.getElementById(link.hash.slice(1)));
+    const header = navigation.closest(".cabecera");
+    const quoteLink = header?.querySelector(".cabecera-cotizar");
+    let frame = null;
+    let current = -1;
+
+    function updateCurrentSection() {
+      frame = null;
+      const threshold = (header?.getBoundingClientRect().bottom ?? 0) + 32;
+      const index = sections.findLastIndex(section => section && section.getBoundingClientRect().top <= threshold);
+      const next = Math.max(0, index);
+      if (next === current) return;
+      sectionLinks[current]?.removeAttribute("aria-current");
+      sectionLinks[next].setAttribute("aria-current", "location");
+      if (quoteLink?.hash === sectionLinks[next].hash) {
+        quoteLink.setAttribute("aria-current", "location");
+      } else {
+        quoteLink?.removeAttribute("aria-current");
+      }
+      current = next;
     }
+
+    current = sectionLinks.findIndex(link => link.hasAttribute("aria-current"));
+    function scheduleSectionUpdate() {
+      if (frame === null) frame = requestAnimationFrame(updateCurrentSection);
+    }
+    window.addEventListener("scroll", scheduleSectionUpdate, { passive: true });
+    window.addEventListener("resize", scheduleSectionUpdate);
+    scheduleSectionUpdate();
   }
 
 }
@@ -458,6 +466,13 @@ function inicializarFormulario() {
   let preparedMessage = "";
   let submitted = false;
   let revisionSolicitud = 0;
+  let registrando = false;
+  if (servidorLocal()) {
+    form.querySelector('button[type="submit"]').firstChild.textContent = "Registrar mi cotización ";
+    document.getElementById("aviso-formulario").textContent =
+      "Completa los campos obligatorios (*). Al continuar se guardará tu cotización en la base local.";
+    prepared.querySelector("p").textContent = "Tu cotización quedó registrada. Puedes compartir el resumen por WhatsApp o correo.";
+  }
 
   dateField.min = fechaLocal();
   dateField.addEventListener("focus", () => {
@@ -514,8 +529,9 @@ function inicializarFormulario() {
   });
   actualizarContadorMensaje();
 
-  form.addEventListener("submit", (event) => {
+  form.addEventListener("submit", async (event) => {
     event.preventDefault();
+    if (registrando || form.hidden) return;
     // La página puede permanecer abierta durante un cambio de día.
     dateField.min = fechaLocal();
     estadoValidacion.textContent = "";
@@ -531,10 +547,28 @@ function inicializarFormulario() {
     );
     const serviceLabel =
       document.getElementById("servicio").selectedOptions[0].textContent.trim();
+    let registro = null;
+    if (servidorLocal()) {
+      const boton = form.querySelector('button[type="submit"]');
+      registrando = true;
+      boton.disabled = true;
+      try {
+        registro = await registrarSolicitud("cotizaciones", values);
+      } catch (error) {
+        errorSummary.hidden = false;
+        errorSummary.textContent = error.message || "No pudimos registrar tu cotización. Intenta nuevamente.";
+        return;
+      } finally {
+        boton.disabled = false;
+        registrando = false;
+      }
+    }
     preparedMessage = crearResumenSolicitud(values, serviceLabel);
     revisionSolicitud += 1;
     // textContent evita interpretar como HTML los datos del visitante.
-    document.getElementById("resumen-solicitud").textContent = preparedMessage;
+    document.getElementById("resumen-solicitud").textContent = registro
+      ? "Cotización registrada #" + registro.id + "\n\n" + preparedMessage
+      : preparedMessage;
     document.getElementById("enviar-whatsapp").href =
       `https://wa.me/593995883856?text=${encodeURIComponent(preparedMessage)}`;
     document.getElementById("enviar-correo").href =

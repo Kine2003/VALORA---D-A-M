@@ -1,5 +1,6 @@
 /* Acceso a datos públicos y preferencias. No guarda datos de pago ni envía pedidos. */
 import { normalizarCarrito, validarProductos } from "./cart.js";
+import { servidorLocal, urlApi } from "./api.js";
 
 const URL_PRODUCTOS = new URL("../data/productos.json", import.meta.url);
 const CLAVE_CARRITO = "valora-carrito-v1";
@@ -89,7 +90,7 @@ export async function cargarProductos({ signal } = {}) {
   signal?.addEventListener("abort", cancelar, { once: true });
   const limite = setTimeout(cancelar, LIMITE_CARGA);
   try {
-    const respuesta = await fetch(URL_PRODUCTOS, {
+    const respuesta = await fetch(servidorLocal() ? urlApi("productos") : URL_PRODUCTOS, {
       signal: controlador.signal,
       credentials: "omit",
       headers: { Accept: "application/json" },
